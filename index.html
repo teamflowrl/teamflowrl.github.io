@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TeamFlowRL: Online Policy Optimization of Decentralized Flow Policies for Multi-Agent Coordination</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+:root{--bg:#f6f5f0;--fg:#1f1f1c;--muted:#6b6a63;--faint:#9a998f;--line:#dcdad2;--card:#fffefb;--accent:#245e91;--accent2:#2e8b57;--btn:#ffffff;}
+:root[data-theme="dark"]{--bg:#17181a;--fg:#e8e6df;--muted:#a9a79e;--faint:#7d7b73;--line:#33343a;--card:#1f2023;--accent:#7fb0dc;--accent2:#7cc49a;--btn:#24252a;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Source Serif 4",Georgia,serif;font-size:18px;line-height:1.62}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+html[data-lang="en"] .zh{display:none} html[data-lang="zh"] .en{display:none}
+
+/* hero */
+.hero{position:relative;height:100vh;min-height:520px;overflow:hidden;background:#000}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.78}
+.hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.05) 45%,rgba(0,0,0,.55) 100%)}
+.hero .htxt{position:absolute;left:0;right:0;bottom:16vh;text-align:center;color:#fff;padding:0 20px}
+.hero h1{font-weight:600;font-size:clamp(44px,7vw,88px);margin:0;letter-spacing:-1px}
+.hero p{font-size:clamp(17px,2vw,23px);margin:.4em auto 0;max-width:900px;opacity:.95}
+.hero .scroll{position:absolute;bottom:26px;left:0;right:0;text-align:center;color:#fff;font-size:11px;letter-spacing:.18em;opacity:.85}
+.hero .scroll:after{content:"";display:block;width:1px;height:26px;background:#fff;margin:8px auto 0;opacity:.7}
+
+/* toggles */
+.toggles{position:fixed;top:14px;right:16px;z-index:50;display:flex;gap:8px}
+.toggles button{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--btn);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;opacity:.92}
+
+/* layout */
+.wrap{display:grid;grid-template-columns:220px minmax(0,840px);gap:56px;justify-content:center;padding:64px 24px 80px}
+nav.toc{position:sticky;top:40px;align-self:start;font-size:14px;line-height:1.45;border-left:1px solid var(--line);padding-left:14px;max-height:calc(100vh - 80px);overflow:auto}
+nav.toc a{display:block;color:var(--muted);padding:4px 0}
+nav.toc a.sub{padding-left:10px;font-size:12.5px;color:var(--faint)}
+nav.toc a.on{color:var(--fg);font-weight:600}
+main{min-width:0}
+h1.title{font-weight:500;font-size:44px;line-height:1.15;margin:0 0 14px;letter-spacing:-.5px}
+.authors{font-size:17px;color:var(--fg)} .venue{font-size:14px;color:var(--muted);margin-top:4px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 26px}
+.btns a{display:inline-flex;align-items:center;gap:7px;font-size:14.5px;color:var(--fg);background:var(--btn);border:1px solid var(--line);border-radius:8px;padding:6px 14px}
+.btns a:hover{text-decoration:none;border-color:var(--faint)}
+.btns a.off{color:var(--faint);cursor:default}
+.btns svg{width:15px;height:15px}
+hr{border:0;border-top:1px solid var(--line);margin:8px 0 26px}
+h2{font-weight:500;font-size:34px;margin:46px 0 14px;letter-spacing:-.3px}
+h3{font-weight:500;font-size:24px;margin:30px 0 8px}
+p{margin:0 0 14px}
+figure{margin:22px 0 26px}
+figure img,figure video{width:100%;display:block;border-radius:10px;border:1px solid var(--line);background:#fff}
+figure.dark video{background:#000}
+figcaption{font-size:14.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+figcaption b{color:var(--fg)}
+ul.contrib{padding-left:22px} ul.contrib li{margin-bottom:10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat .n{font-size:30px;font-weight:600;color:var(--accent);line-height:1.1}
+.stat .l{font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.35}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.grid4 figure,.grid2 figure{margin:0}
+.grid4 video{aspect-ratio:1/1;object-fit:cover}
+.grid2 video{aspect-ratio:16/9;object-fit:contain;background:#fff}
+.cap{font-size:13.5px;color:var(--muted);text-align:center;margin-top:5px}
+.eq{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 18px;margin:14px 0;overflow-x:auto}
+.eq .lab{font-size:13px;color:var(--muted);font-family:"JetBrains Mono",monospace}
+table.res{border-collapse:collapse;width:100%;font-size:15.5px;margin:10px 0 6px}
+table.res th,table.res td{border-bottom:1px solid var(--line);padding:7px 10px;text-align:left}
+table.res th{font-weight:600;color:var(--muted);font-size:14px}
+table.res td.num{font-variant-numeric:tabular-nums}
+pre.bib{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:13px;overflow-x:auto;font-family:"JetBrains Mono",monospace;line-height:1.5}
+footer{text-align:center;color:var(--faint);font-size:13px;padding:20px 0 40px}
+@media (max-width:980px){.wrap{grid-template-columns:minmax(0,1fr);gap:0}nav.toc{display:none}.grid4{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}h1.title{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="toggles"><button id="lang">中文</button><button id="theme">Dark</button></div>
+
+<section class="hero" id="top">
+  <video src="assets/hero.mp4" poster="assets/hero_poster.jpg" autoplay muted loop playsinline></video>
+  <div class="shade"></div>
+  <div class="htxt">
+    <h1>TeamFlowRL</h1>
+    <p class="en">Online policy optimization of decentralized flow policies for multi-agent coordination</p>
+    <p class="zh">面向多智能体协作的分散式流策略在线优化</p>
+  </div>
+  <div class="scroll mono"><span class="en">SCROLL TO EXPLORE</span><span class="zh">向下滚动</span></div>
+</section>
+
+<div class="wrap">
+<nav class="toc" id="toc">
+  <a href="#title">Title</a>
+  <a href="#abstract"><span class="en">Abstract</span><span class="zh">摘要</span></a>
+  <a class="sub" href="#video"><span class="en">Full video</span><span class="zh">讲解视频</span></a>
+  <a href="#contributions"><span class="en">Contributions</span><span class="zh">贡献</span></a>
+  <a href="#method"><span class="en">Method</span><span class="zh">方法</span></a>
+  <a class="sub" href="#framework"><span class="en">Framework</span><span class="zh">整体框架</span></a>
+  <a class="sub" href="#objective"><span class="en">Trajectory objective</span><span class="zh">轨迹目标</span></a>
+  <a href="#results"><span class="en">Main results</span><span class="zh">主要结果</span></a>
+  <a class="sub" href="#benchmarks"><span class="en">Benchmarks</span><span class="zh">基准任务</span></a>
+  <a class="sub" href="#robots"><span class="en">Bimanual manipulation</span><span class="zh">双臂操作</span></a>
+  <a href="#behavior"><span class="en">Team behavior</span><span class="zh">团队行为</span></a>
+  <a href="#demos"><span class="en">Demonstrations</span><span class="zh">演示</span></a>
+  <a href="#limitations"><span class="en">Limitations</span><span class="zh">局限</span></a>
+  <a href="#conclusion"><span class="en">Conclusion</span><span class="zh">结论</span></a>
+  <a href="#citation"><span class="en">Citation</span><span class="zh">引用</span></a>
+</nav>
+
+<main>
+<section id="title">
+  <h1 class="title">TeamFlowRL: Online Policy Optimization of Decentralized Flow Policies for Multi-Agent Coordination</h1>
+  <div class="authors">Guowei Zou, Beiwen Zhang, Haitao Wang, Hong Hong, Zhiquan Chen, Hejun Wu</div>
+  <div class="venue"><span class="en">Sun Yat-sen University</span><span class="zh">中山大学</span></div>
+  <div class="btns">
+    <a class="off" href="#" onclick="return false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>Paper</a>
+    <a href="https://github.com/teamflowrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>Code</a>
+    <a href="https://huggingface.co/teamflowrl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>Models</a>
+    <a href="#video"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>Video</a>
+  </div>
+  <hr>
+</section>
+
+<section id="abstract">
+  <h2><span class="en">Abstract</span><span class="zh">摘要</span></h2>
+  <p class="en">Complex cooperative tasks require coordinated multi-agent behavior. Offline generative policies learn expressive cooperative behaviors from trajectories but remain limited by fixed datasets. Online reinforcement learning can improve them through environment interaction. However, fine-tuning flow policies is difficult because action likelihoods are hard to compute. We propose <b>TeamFlowRL</b>, a two-stage framework that pretrains multi-agent flow policies offline and fine-tunes them online. We formulate team policy optimization over the complete denoising trajectories of decentralized flow policies, avoiding intractable action likelihoods. The resulting objective weights each agent's trajectory ratio with a shared team advantage and clips each ratio separately, aligning local policy updates with the common team return. Across 51 paired configurations in seven simulation groups, TeamFlowRL improves every offline initialization, with a 47.3% average gain in normalized score. It also achieves 33.1% higher average success under exploration noise than Gaussian-policy fine-tuning across 6 bimanual tasks.</p>
+  <p class="zh">复杂的协作任务需要多个智能体协调行动。离线生成式策略能从轨迹中学到丰富的协作行为，但受限于固定的数据集。在线强化学习可以通过与环境交互继续提升它们，但流策略的动作似然难以计算，因此很难微调。我们提出 <b>TeamFlowRL</b>，一个两阶段框架：先离线预训练多智能体流策略，再在线微调。我们在分散式流策略的完整去噪轨迹上构建团队策略优化，避开了无法计算的动作似然。得到的目标用共享团队优势加权每个智能体的轨迹比值，并对每个比值分别裁剪，使各自的策略更新与共同的团队回报一致。在 7 组仿真环境的 51 个配对配置上，TeamFlowRL 提升了每一个离线初始化，归一化分数平均提升 47.3%；在 6 个双臂任务上，探索噪声下的平均成功率比高斯策略微调高 33.1%。</p>
+</section>
+
+<section id="video">
+  <figure class="dark">
+    <video src="assets/full_video.mp4" controls preload="metadata" poster=""></video>
+    <figcaption><b>TeamFlowRL.</b> <span class="en">Full project video with narration and subtitles.</span><span class="zh">完整讲解视频，带配音和字幕。</span></figcaption>
+  </figure>
+</section>
+
+<section id="contributions">
+  <h2><span class="en">Contributions</span><span class="zh">贡献</span></h2>
+  <ul class="contrib en">
+    <li><b>Online RL for multi-agent flow policies.</b> To our knowledge, TeamFlowRL is the first framework for online RL fine-tuning of offline-pretrained multi-agent flow policies.</li>
+    <li><b>Team policy objective over denoising trajectories.</b> We combine a shared team advantage with separate clipping of each agent's complete trajectory ratio. With exact advantages, the surrogate matches the gradient of the joint surrogate at the collection policy, up to normalization.</li>
+    <li><b>Consistent gains.</b> Across 51 configurations, TeamFlowRL consistently improves offline initializations and outperforms Gaussian policies in multimodal action expressiveness and online adaptation efficiency.</li>
+  </ul>
+  <ul class="contrib zh">
+    <li><b>多智能体流策略的在线强化学习。</b>据我们所知，TeamFlowRL 是第一个对离线预训练的多智能体流策略做在线强化学习微调的框架。</li>
+    <li><b>去噪轨迹上的团队策略目标。</b>把共享团队优势与对每个智能体完整轨迹比值的分别裁剪结合起来。团队优势精确时，该替代目标在采样策略处与联合替代目标的梯度一致，只差归一化系数。</li>
+    <li><b>一致的提升。</b>在 51 个配置上，TeamFlowRL 一致地提升离线初始化，并在多模态动作表达能力和在线适应效率上优于高斯策略。</li>
+  </ul>
+  <figure>
+    <video src="assets/fig1_flow.mp4" autoplay muted loop playsinline></video>
+    <figcaption><b>Figure 1: Overview.</b> <span class="en">Offline multi-agent data initializes decentralized flow policies, online RL with a shared team advantage improves them, and the fine-tuned policies show multimodal cooperative behaviors.</span><span class="zh">离线多智能体数据初始化分散式流策略，基于共享团队优势的在线强化学习继续提升它们，微调后的策略表现出多模态的协作行为。</span></figcaption>
+  </figure>
+</section>
+
+<section id="method">
+  <h2><span class="en">Method</span><span class="zh">方法</span></h2>
+  <p class="en">TeamFlowRL learns decentralized policies for cooperative tasks in two stages. It first initializes a shared flow policy from offline input–action pairs with conditional flow matching. For online fine-tuning, we turn the flow generator into a stochastic policy over complete denoising trajectories, making the likelihood of each agent's sampled trajectory tractable. A centralized critic then estimates a shared team advantage, which multiplies the agent-wise trajectory likelihood ratios in a PPO objective. At deployment, each agent independently generates its action from local information.</p>
+  <p class="zh">TeamFlowRL 分两个阶段学习协作任务的分散式策略。先用条件流匹配，从离线的输入–动作对初始化一个共享的流策略。在线微调时，把流生成器变成完整去噪轨迹上的随机策略，使每个智能体所采样轨迹的似然可以计算。集中式评论家估计共享团队优势，在 PPO 目标中乘到各智能体的轨迹似然比上。部署时，每个智能体只根据本地信息独立生成动作。</p>
+  <h3 id="framework"><span class="en">Framework</span><span class="zh">整体框架</span></h3>
+  <figure>
+    <video src="assets/fw_flow_s4.mp4" autoplay muted loop playsinline></video>
+    <figcaption><b>Figure 2: TeamFlowRL.</b> <span class="en">Offline flow pretraining (left and center) and online RL fine-tuning (right). The bottom left shows how a shared team advantage guides updates along each stored denoising trajectory, and the bottom right shows decentralized execution without transition noise.</span><span class="zh">离线流预训练（左、中）与在线强化学习微调（右）。左下展示共享团队优势如何沿每条存储的去噪轨迹引导更新，右下是不加转移噪声的分散式执行。</span></figcaption>
+  </figure>
+  <h3 id="objective"><span class="en">Team policy optimization over denoising trajectories</span><span class="zh">去噪轨迹上的团队策略优化</span></h3>
+  <p class="en">Following ReinFlow, we add Gaussian noise to each denoising transition, yielding a tractable probability over the complete trajectory. Agents sample independently, so the joint trajectory policy factorizes, and each agent's complete trajectory ratio is clipped separately while retaining the shared team advantage.</p>
+  <p class="zh">参照 ReinFlow，在每个去噪转移上加高斯噪声，得到完整轨迹上可计算的概率。各智能体独立采样，联合轨迹策略因此可以分解；每个智能体的完整轨迹比值分别裁剪，同时保留共享团队优势。</p>
+  <div class="eq"><div class="lab">Noisy denoising step of agent i</div><div class="tex" data-tex="x^{i,k+1}=\mu_\theta(h^i,x^{i,k},k)+\sigma_\phi(h^i,x^{i,k},k)\odot\epsilon^{i,k}"></div></div>
+  <div class="eq"><div class="lab">Probability of the complete denoising trajectory</div><div class="tex" data-tex="q_{\theta,\phi}(\xi^i\mid h^i)=p_0(x^{i,0})\prod_{k=0}^{K-1}\mathcal N\bigl(x^{i,k+1}\mid\mu_\theta^{i,k},\operatorname{diag}((\sigma_\phi^{i,k})^2)\bigr)"></div></div>
+  <div class="eq"><div class="lab">Per-agent trajectory ratio</div><div class="tex" data-tex="\rho_t^i=\frac{q_{\theta,\phi}(\xi_t^i\mid h_t^i)}{q_{\mathrm{old}}(\xi_t^i\mid h_t^i)}"></div></div>
+  <div class="eq"><div class="lab">Shared team advantage, each ratio clipped separately</div><div class="tex" data-tex="L_{\mathrm{clip}}=\frac{1}{Z}\sum_{t,i}m_t^i\min\Bigl(\rho_t^i\widetilde A_t,\ \operatorname{clip}(\rho_t^i,1-\varepsilon,1+\varepsilon)\widetilde A_t\Bigr)"></div></div>
+</section>
+
+<section id="results">
+  <h2><span class="en">Main results</span><span class="zh">主要结果</span></h2>
+  <div class="stats">
+    <div class="stat"><div class="n">51 / 51</div><div class="l"><span class="en">configurations improve over the offline initialization</span><span class="zh">个配置都超过离线初始化</span></div></div>
+    <div class="stat"><div class="n">+47.3%</div><div class="l"><span class="en">average gain in normalized score across seven groups</span><span class="zh">7 组环境的归一化分数平均提升</span></div></div>
+    <div class="stat"><div class="n">+33.1%</div><div class="l"><span class="en">success over BC+MAPPO under exploration noise (6 robot tasks)</span><span class="zh">6 个机械臂任务探索噪声下比 BC+MAPPO 高的成功率</span></div></div>
+    <div class="stat"><div class="n">95% / 50%</div><div class="l"><span class="en">TeamFlowRL / BC+MAPPO executions that succeed from one fixed state</span><span class="zh">固定初始状态下 TeamFlowRL / BC+MAPPO 的成功执行比例</span></div></div>
+  </div>
+  <h3 id="benchmarks"><span class="en">Multi-agent benchmarks</span><span class="zh">多智能体基准任务</span></h3>
+  <p class="en">Online fine-tuning improves the offline flow policy in all 45 benchmark configurations of MPE, OG-MARL MuJoCo, OMIGA MuJoCo, SMAC, and SMACv2. Gains occur at every data quality and shrink as the offline data improve.</p>
+  <p class="zh">在 MPE、OG-MARL MuJoCo、OMIGA MuJoCo、SMAC、SMACv2 的全部 45 个基准配置上，在线微调都提升了离线流策略。每种数据质量下都有提升，离线数据越好，提升越小。</p>
+  <figure>
+    <img src="assets/learning_overview_main.png" alt="Learning curves">
+    <figcaption><b>Figure 3: Learning curves.</b> <span class="en">Pretraining updates followed by online environment steps in millions. The tick 1 / 0 marks the start of online training, and colors identify offline data quality.</span><span class="zh">横轴先是预训练更新次数，再是在线环境步数（百万）。刻度 1 / 0 是在线训练开始处，颜色表示离线数据质量。</span></figcaption>
+  </figure>
+  <h3 id="robots"><span class="en">Bimanual manipulation</span><span class="zh">双臂操作</span></h3>
+  <p class="en">In ManiSkill3 and RoboFactory, each Franka Panda arm is one agent. After 1 million online steps, the success of TeamFlowRL with exploration noise averages 68.0% over the six tasks, against 31.3% for BC+MAPPO, and MAPPO trained from scratch succeeds in none of them.</p>
+  <p class="zh">在 ManiSkill3 和 RoboFactory 中，每条 Franka Panda 机械臂是一个智能体。在线训练 100 万步后，6 个任务上 TeamFlowRL 带探索噪声的平均成功率为 68.0%，BC+MAPPO 为 31.3%，从零训练的 MAPPO 在所有任务上都没有成功。</p>
+  <figure>
+    <img src="assets/fig6_curves.png" alt="Robot learning curves">
+    <figcaption><b>Figure 4: Training in multi-arm manipulation.</b> <span class="en">Success with exploration noise from pretraining through online fine-tuning. The vertical line marks the start of online training.</span><span class="zh">从预训练到在线微调，带探索噪声的成功率。竖线是在线训练开始处。</span></figcaption>
+  </figure>
+  <figure>
+    <video src="assets/robot_tcp_paths.mp4" autoplay muted loop playsinline></video>
+    <figcaption><b>Figure 5: Tool center point paths.</b> <span class="en">Paths of both arms from one initial scene with exploration noise, 30 executions per method. Red lines are failures.</span><span class="zh">同一初始场景、带探索噪声时两条机械臂末端的轨迹，每种方法 30 次执行，红线表示失败。</span></figcaption>
+  </figure>
+</section>
+
+<section id="behavior">
+  <h2><span class="en">Team behavior</span><span class="zh">团队行为</span></h2>
+  <p class="en">From the same local input, the fine-tuned flow policy produces separated action modes, whereas BC+MAPPO represents each agent's action with a single Gaussian. In Spread, over 64 stochastic rollouts from one fixed scene, TeamFlowRL covers all landmarks with two different assignments, CAB in 35 rollouts and ACB in 28.</p>
+  <p class="zh">对同一个本地输入，微调后的流策略产生分开的多个动作模式，而 BC+MAPPO 只用一个高斯表示每个智能体的动作。在 Spread 中，从同一固定场景出发的 64 次随机执行里，TeamFlowRL 用两种不同分工覆盖全部地标：35 次是 CAB，28 次是 ACB。</p>
+  <figure>
+    <video src="assets/dist_anim.mp4" autoplay muted loop playsinline></video>
+    <figcaption><b>Figure 6: Action distributions.</b> <span class="en">Actions of the three agents at the first step of one Spread and one World scene, for TeamFlowRL and BC+MAPPO.</span><span class="zh">一个 Spread 场景和一个 World 场景第一步时三个智能体的动作分布，对比 TeamFlowRL 与 BC+MAPPO。</span></figcaption>
+  </figure>
+  <figure>
+    <video src="assets/team_behavior.mp4" autoplay muted loop playsinline></video>
+    <figcaption><b>Figure 7: MPE rollouts.</b> <span class="en">Paths of stochastic rollouts from one initial scene per row, for TeamFlowRL and BC+MAPPO in Spread, World, and Tag.</span><span class="zh">每行同一初始场景下的随机执行轨迹，对比 TeamFlowRL 与 BC+MAPPO，任务为 Spread、World、Tag。</span></figcaption>
+  </figure>
+</section>
+
+<section id="demos">
+  <h2><span class="en">Demonstrations</span><span class="zh">演示</span></h2>
+  <div class="grid4">
+    <figure><video src="assets/smac_2s3z_teamflowrl.mp4" autoplay muted loop playsinline></video><div class="cap">SMAC 2s3z</div></figure>
+    <figure><video src="assets/smac_8m_teamflowrl.mp4" autoplay muted loop playsinline></video><div class="cap">SMAC 8m</div></figure>
+    <figure><video src="assets/mamujoco_2halfcheetah_teamflowrl.mp4" autoplay muted loop playsinline></video><div class="cap">MA-MuJoCo 2-HalfCheetah</div></figure>
+    <figure><video src="assets/mamujoco_2ant_teamflowrl.mp4" autoplay muted loop playsinline></video><div class="cap">MA-MuJoCo 2-Ant</div></figure>
+  </div>
+  <figcaption style="margin-top:8px"><b>Figure 8: TeamFlowRL rollouts on multi-agent benchmarks.</b></figcaption>
+  <div class="grid2" style="margin-top:22px">
+    <figure><video src="assets/robot_pick_compare.mp4" autoplay muted loop playsinline></video><div class="cap">TwoRobotPickCube</div></figure>
+    <figure><video src="assets/robot_stack_compare.mp4" autoplay muted loop playsinline></video><div class="cap">TwoRobotStackCube</div></figure>
+  </div>
+  <figcaption style="margin-top:8px"><b>Figure 9: Recorded episodes under exploration noise.</b> <span class="en">TeamFlowRL (left half) and BC+MAPPO (right half) from the same scene, with the left (L) and right (R) wrist views above each frame.</span><span class="zh">同一场景下 TeamFlowRL（左半）与 BC+MAPPO（右半），每帧上方是左（L）右（R）腕部视角。</span></figcaption>
+</section>
+
+<section id="limitations">
+  <h2><span class="en">Limitations</span><span class="zh">局限</span></h2>
+  <p class="en">Our manipulation evaluation is limited to simulated two-arm cube manipulation. Camera observations are used in only two tasks, and we do not evaluate physical robots. We use compact, task-specific policy networks and have not evaluated TeamFlowRL with large VLA models. Offline data quality also affects final online performance differently across tasks.</p>
+  <p class="zh">机械臂评估只限于仿真中的双臂方块操作，只有两个任务使用相机观测，没有在真实机器人上评估。我们用的是小规模、针对任务的策略网络，还没有在大型 VLA 模型上验证 TeamFlowRL。离线数据质量对最终在线性能的影响也因任务而异。</p>
+</section>
+
+<section id="conclusion">
+  <h2><span class="en">Conclusion</span><span class="zh">结论</span></h2>
+  <p class="en">We introduced TeamFlowRL, a two-stage framework that pretrains multi-agent flow policies offline and fine-tunes them through online interaction. TeamFlowRL formulates team policy optimization over decentralized denoising trajectories, using a shared team advantage and separate clipping of each agent's complete trajectory ratio to align local updates with the common team return. Across 51 configurations in seven simulation groups, online fine-tuning improves every offline initialization, with a 47.3% average gain in normalized score.</p>
+  <p class="zh">我们提出了 TeamFlowRL，一个先离线预训练多智能体流策略、再通过在线交互微调的两阶段框架。TeamFlowRL 在分散式去噪轨迹上做团队策略优化，用共享团队优势和对每个智能体完整轨迹比值的分别裁剪，使各自的更新与共同的团队回报一致。在 7 组仿真环境的 51 个配置上，在线微调提升了每一个离线初始化，归一化分数平均提升 47.3%。</p>
+</section>
+
+<section id="citation">
+  <h2><span class="en">Citation</span><span class="zh">引用</span></h2>
+<pre class="bib">@misc{zou2026teamflowrl,
+  title  = {TeamFlowRL: Online Policy Optimization of Decentralized Flow Policies for Multi-Agent Coordination},
+  author = {Zou, Guowei and Zhang, Beiwen and Wang, Haitao and Hong, Hong and Chen, Zhiquan and Wu, Hejun},
+  year   = {2026}
+}</pre>
+</section>
+</main>
+</div>
+<footer>TeamFlowRL</footer>
+
+<script>
+const root=document.documentElement;
+function setLang(l){root.dataset.lang=l;document.getElementById('lang').textContent=l==='en'?'中文':'English';try{localStorage.setItem('tfr_pp_lang',l)}catch(e){}}
+function setTheme(t){root.dataset.theme=t;document.getElementById('theme').textContent=t==='dark'?'Light':'Dark';try{localStorage.setItem('tfr_pp_theme',t)}catch(e){}}
+let L='en',T=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+try{L=localStorage.getItem('tfr_pp_lang')||L;T=localStorage.getItem('tfr_pp_theme')||T}catch(e){}
+setLang(L);setTheme(T);
+document.getElementById('lang').onclick=()=>setLang(root.dataset.lang==='en'?'zh':'en');
+document.getElementById('theme').onclick=()=>setTheme(root.dataset.theme==='dark'?'light':'dark');
+addEventListener('load',()=>{if(window.katex)document.querySelectorAll('.tex').forEach(e=>katex.render(e.dataset.tex,e,{displayMode:true,throwOnError:false}));});
+// highlight the current section in the table of contents
+const links=[...document.querySelectorAll('nav.toc a')];const targets=links.map(a=>document.querySelector(a.getAttribute('href')));
+addEventListener('scroll',()=>{let k=0;targets.forEach((t,i)=>{if(t&&t.getBoundingClientRect().top<140)k=i});links.forEach((a,i)=>a.classList.toggle('on',i===k))},{passive:true});
+</script>
+</body>
+</html>
