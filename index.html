@@ -276,7 +276,7 @@ addEventListener('scroll',()=>{let k=0;targets.forEach((t,i)=>{if(t&&t.getBoundi
 (function(){const hero=document.querySelector('.hero');const slides=[...hero.querySelectorAll('.slide')];const dots=[...hero.querySelectorAll('.dots button')];let cur=0,left=+slides[0].dataset.plays;
 function show(i){slides.forEach((s,k)=>{s.classList.toggle('on',k===i);const v=s.querySelector('video');if(k!==i){v.pause();}});dots.forEach((d,k)=>d.classList.toggle('on',k===i));hero.classList.toggle('paged',slides[i].classList.contains('page'));cur=i;left=+slides[i].dataset.plays;const v=slides[i].querySelector('video');v.currentTime=0;v.play().catch(()=>{});}
 slides.forEach((s,k)=>s.querySelector('video').addEventListener('ended',e=>{if(k!==cur)return;left-=1;if(left>0){e.target.currentTime=0;e.target.play().catch(()=>{});}else show((cur+1)%slides.length);}));
-dots.forEach((d,k)=>d.addEventListener('click',()=>show(k)));})();
+dots.forEach((d,k)=>d.addEventListener('click',()=>show(k)));document.addEventListener('keydown',e=>{if(e.altKey||e.ctrlKey||e.metaKey||/INPUT|TEXTAREA|SELECT/.test((e.target.tagName||'')))return;const r=hero.getBoundingClientRect();if(r.bottom<window.innerHeight*0.3)return;if(e.key==='ArrowRight'){e.preventDefault();show((cur+1)%slides.length);}else if(e.key==='ArrowLeft'){e.preventDefault();show((cur+slides.length-1)%slides.length);}});})();
 </script>
 </body>
 </html>
