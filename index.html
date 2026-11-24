@@ -20,7 +20,7 @@ html[data-lang="en"] .zh{display:none} html[data-lang="zh"] .en{display:none}
 
 /* hero */
 .hero{position:relative;height:100vh;min-height:520px;overflow:hidden;background:#000}
-.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.78}
+.hero .slide{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}.hero .slide.on{opacity:1}.hero .slide video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.78}.hero .slide.page{background:#fff}.hero .slide.page video{object-fit:contain;opacity:1;padding:3vh 3vw 9vh;box-sizing:border-box}.hero .shade,.hero .htxt{transition:opacity .8s ease}.hero.paged .shade,.hero.paged .htxt{opacity:0}.hero.paged .scroll{color:#555}.hero.paged .scroll:after{background:#555}.hero .dots{position:absolute;bottom:104px;left:0;right:0;display:flex;justify-content:center;gap:10px;z-index:3}.hero .dots button{width:9px;height:9px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.5);cursor:pointer}.hero .dots button.on{background:#fff}.hero.paged .dots button{background:rgba(0,0,0,.25)}.hero.paged .dots button.on{background:#333}
 .hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.05) 45%,rgba(0,0,0,.55) 100%)}
 .hero .htxt{position:absolute;left:0;right:0;bottom:16vh;text-align:center;color:#fff;padding:0 20px}
 .hero h1{font-weight:600;font-size:clamp(44px,7vw,88px);margin:0;letter-spacing:-1px}
@@ -81,7 +81,10 @@ footer{text-align:center;color:var(--faint);font-size:13px;padding:20px 0 40px}
 <div class="toggles"><button id="lang">中文</button><button id="theme">Dark</button></div>
 
 <section class="hero" id="top">
-  <video src="assets/hero.mp4" poster="assets/hero_poster.jpg" autoplay muted loop playsinline></video>
+  <div class="slide on" data-plays="1"><video src="assets/hero.mp4" poster="assets/hero_poster.jpg" autoplay muted playsinline></video></div>
+  <div class="slide page" data-plays="2"><video src="assets/hero_benchmarks.mp4" muted playsinline preload="auto"></video></div>
+  <div class="slide page" data-plays="1"><video src="assets/hero_robots.mp4" muted playsinline preload="auto"></video></div>
+  <div class="dots"><button class="on" aria-label="1"></button><button aria-label="2"></button><button aria-label="3"></button></div>
   <div class="shade"></div>
   <div class="htxt">
     <h1>TeamFlowRL</h1>
@@ -268,6 +271,12 @@ addEventListener('load',()=>{if(window.katex)document.querySelectorAll('.tex').f
 // highlight the current section in the table of contents
 const links=[...document.querySelectorAll('nav.toc a')];const targets=links.map(a=>document.querySelector(a.getAttribute('href')));
 addEventListener('scroll',()=>{let k=0;targets.forEach((t,i)=>{if(t&&t.getBoundingClientRect().top<140)k=i});links.forEach((a,i)=>a.classList.toggle('on',i===k))},{passive:true});
+</script>
+<script>
+(function(){const hero=document.querySelector('.hero');const slides=[...hero.querySelectorAll('.slide')];const dots=[...hero.querySelectorAll('.dots button')];let cur=0,left=+slides[0].dataset.plays;
+function show(i){slides.forEach((s,k)=>{s.classList.toggle('on',k===i);const v=s.querySelector('video');if(k!==i){v.pause();}});dots.forEach((d,k)=>d.classList.toggle('on',k===i));hero.classList.toggle('paged',slides[i].classList.contains('page'));cur=i;left=+slides[i].dataset.plays;const v=slides[i].querySelector('video');v.currentTime=0;v.play().catch(()=>{});}
+slides.forEach((s,k)=>s.querySelector('video').addEventListener('ended',e=>{if(k!==cur)return;left-=1;if(left>0){e.target.currentTime=0;e.target.play().catch(()=>{});}else show((cur+1)%slides.length);}));
+dots.forEach((d,k)=>d.addEventListener('click',()=>show(k)));})();
 </script>
 </body>
 </html>
