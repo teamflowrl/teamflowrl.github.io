@@ -191,16 +191,20 @@ footer{text-align:center;color:var(--faint);font-size:13px;padding:20px 0 40px}
     <img src="assets/learning_overview_main.png" alt="Learning curves">
     <figcaption><b>Figure 3: Learning curves.</b> <span class="en">Pretraining updates followed by online environment steps in millions. The tick 1 / 0 marks the start of online training, and colors identify offline data quality.</span><span class="zh">横轴先是预训练更新次数，再是在线环境步数（百万）。刻度 1 / 0 是在线训练开始处，颜色表示离线数据质量。</span></figcaption>
   </figure>
+  <figure>
+    <img src="assets/quality_gain.png" alt="Online gain versus offline data quality" style="max-width:720px;margin:0 auto;display:block">
+    <figcaption><b>Figure 4: Online gain and offline data quality.</b> <span class="en">Online gain versus offline dataset mean return, both as a percentage of the task's best online return. Dashed lines are linear fits, and error bars show one standard deviation.</span><span class="zh">在线提升幅度与离线数据平均回报的关系，两者都以该任务最好的在线回报为 100%。虚线是线性拟合，误差棒为一个标准差。</span></figcaption>
+  </figure>
   <h3 id="robots"><span class="en">Bimanual manipulation</span><span class="zh">双臂操作</span></h3>
   <p class="en">In ManiSkill3 and RoboFactory, each Franka Panda arm is one agent. After 1 million online steps, the success of TeamFlowRL with exploration noise averages 68.0% over the six tasks, against 31.3% for BC+MAPPO, and MAPPO trained from scratch succeeds in none of them.</p>
   <p class="zh">在 ManiSkill3 和 RoboFactory 中，每条 Franka Panda 机械臂是一个智能体。在线训练 100 万步后，6 个任务上 TeamFlowRL 带探索噪声的平均成功率为 68.0%，BC+MAPPO 为 31.3%，从零训练的 MAPPO 在所有任务上都没有成功。</p>
   <figure>
     <img src="assets/fig6_curves.png" alt="Robot learning curves">
-    <figcaption><b>Figure 4: Training in multi-arm manipulation.</b> <span class="en">Success with exploration noise from pretraining through online fine-tuning. The vertical line marks the start of online training.</span><span class="zh">从预训练到在线微调，带探索噪声的成功率。竖线是在线训练开始处。</span></figcaption>
+    <figcaption><b>Figure 5: Training in multi-arm manipulation.</b> <span class="en">Success with exploration noise from pretraining through online fine-tuning. The vertical line marks the start of online training.</span><span class="zh">从预训练到在线微调，带探索噪声的成功率。竖线是在线训练开始处。</span></figcaption>
   </figure>
   <figure>
     <video src="assets/robot_tcp_paths.mp4" autoplay muted loop playsinline></video>
-    <figcaption><b>Figure 5: Tool center point paths.</b> <span class="en">Paths of both arms from one initial scene with exploration noise, 30 executions per method. Red lines are failures.</span><span class="zh">同一初始场景、带探索噪声时两条机械臂末端的轨迹，每种方法 30 次执行，红线表示失败。</span></figcaption>
+    <figcaption><b>Figure 6: Tool center point paths.</b> <span class="en">Paths of both arms from one initial scene with exploration noise, 30 executions per method. Red lines are failures.</span><span class="zh">同一初始场景、带探索噪声时两条机械臂末端的轨迹，每种方法 30 次执行，红线表示失败。</span></figcaption>
   </figure>
 </section>
 
@@ -210,11 +214,11 @@ footer{text-align:center;color:var(--faint);font-size:13px;padding:20px 0 40px}
   <p class="zh">对同一个本地输入，微调后的流策略产生分开的多个动作模式，而 BC+MAPPO 只用一个高斯表示每个智能体的动作。在 Spread 中，从同一固定场景出发的 64 次随机执行里，TeamFlowRL 用两种不同分工覆盖全部地标：35 次是 CAB，28 次是 ACB。</p>
   <figure>
     <video src="assets/dist_anim.mp4" autoplay muted loop playsinline></video>
-    <figcaption><b>Figure 6: Action distributions.</b> <span class="en">Actions of the three agents at the first step of one Spread and one World scene, for TeamFlowRL and BC+MAPPO.</span><span class="zh">一个 Spread 场景和一个 World 场景第一步时三个智能体的动作分布，对比 TeamFlowRL 与 BC+MAPPO。</span></figcaption>
+    <figcaption><b>Figure 7: Action distributions.</b> <span class="en">Actions of the three agents at the first step of one Spread and one World scene, for TeamFlowRL and BC+MAPPO.</span><span class="zh">一个 Spread 场景和一个 World 场景第一步时三个智能体的动作分布，对比 TeamFlowRL 与 BC+MAPPO。</span></figcaption>
   </figure>
   <figure>
     <video src="assets/team_behavior.mp4" autoplay muted loop playsinline></video>
-    <figcaption><b>Figure 7: MPE rollouts.</b> <span class="en">Paths of stochastic rollouts from one initial scene per row, for TeamFlowRL and BC+MAPPO in Spread, World, and Tag.</span><span class="zh">每行同一初始场景下的随机执行轨迹，对比 TeamFlowRL 与 BC+MAPPO，任务为 Spread、World、Tag。</span></figcaption>
+    <figcaption><b>Figure 8: MPE rollouts.</b> <span class="en">Paths of stochastic rollouts from one initial scene per row, for TeamFlowRL and BC+MAPPO in Spread, World, and Tag.</span><span class="zh">每行同一初始场景下的随机执行轨迹，对比 TeamFlowRL 与 BC+MAPPO，任务为 Spread、World、Tag。</span></figcaption>
   </figure>
 </section>
 
@@ -226,12 +230,12 @@ footer{text-align:center;color:var(--faint);font-size:13px;padding:20px 0 40px}
     <figure><video src="assets/mamujoco_2halfcheetah_teamflowrl.mp4" autoplay muted loop playsinline></video><div class="cap">MA-MuJoCo 2-HalfCheetah</div></figure>
     <figure><video src="assets/mamujoco_2ant_teamflowrl.mp4" autoplay muted loop playsinline></video><div class="cap">MA-MuJoCo 2-Ant</div></figure>
   </div>
-  <figcaption style="margin-top:8px"><b>Figure 8: TeamFlowRL rollouts on multi-agent benchmarks.</b></figcaption>
+  <figcaption style="margin-top:8px"><b>Figure 9: TeamFlowRL rollouts on multi-agent benchmarks.</b></figcaption>
   <div class="grid2" style="margin-top:22px">
     <figure><video src="assets/robot_pick_compare.mp4" autoplay muted loop playsinline></video><div class="cap">TwoRobotPickCube</div></figure>
     <figure><video src="assets/robot_stack_compare.mp4" autoplay muted loop playsinline></video><div class="cap">TwoRobotStackCube</div></figure>
   </div>
-  <figcaption style="margin-top:8px"><b>Figure 9: Recorded episodes under exploration noise.</b> <span class="en">TeamFlowRL (left half) and BC+MAPPO (right half) from the same scene, with the left (L) and right (R) wrist views above each frame.</span><span class="zh">同一场景下 TeamFlowRL（左半）与 BC+MAPPO（右半），每帧上方是左（L）右（R）腕部视角。</span></figcaption>
+  <figcaption style="margin-top:8px"><b>Figure 10: Recorded episodes under exploration noise.</b> <span class="en">TeamFlowRL (left half) and BC+MAPPO (right half) from the same scene, with the left (L) and right (R) wrist views above each frame.</span><span class="zh">同一场景下 TeamFlowRL（左半）与 BC+MAPPO（右半），每帧上方是左（L）右（R）腕部视角。</span></figcaption>
 </section>
 
 <section id="limitations">
